@@ -13,8 +13,11 @@ extension NSExpressionTests {
             return numbers.reduce(0.0, { $0 + $1.doubleValue })
         }
         
-        @Test("average: works as expected", arguments: FunctionTests.testNumbers)
-        func averageWorksAsExpected(_ arguments: [NSNumber]) throws {
+        
+        // MARK: - Collection Functions
+        
+        @Test("average:", arguments: FunctionTests.testNumberCollections)
+        func testAverage(_ arguments: [NSNumber]) throws {
             let function = NSExpression(forFunction: .average(NSExpression(forConstantValue: arguments)))
             try #require(function.function == "average:")
             guard !arguments.isEmpty else { return }
@@ -22,24 +25,24 @@ extension NSExpressionTests {
             #expect(result == doubleSum(arguments) / Double(arguments.count))
         }
         
-        @Test("sum: works as expected", arguments: FunctionTests.testNumbers)
-        func sumWorksAsExpected(_ arguments: [NSNumber]) throws {
+        @Test("sum:", arguments: FunctionTests.testNumberCollections)
+        func testSum(_ arguments: [NSNumber]) throws {
             let function = NSExpression(forFunction: .sum(NSExpression(forConstantValue: arguments)))
             try #require(function.function == "sum:")
             let result = try #require(function.expressionValue(with: nil, context: nil) as? Double)
             #expect(result == doubleSum(arguments))
         }
         
-        @Test("count: works as expected", arguments: FunctionTests.testNumbers)
-        func countWorksAsExpected(_ arguments: [NSNumber]) throws {
+        @Test("count:", arguments: FunctionTests.testNumberCollections)
+        func testCount(_ arguments: [NSNumber]) throws {
             let function = NSExpression(forFunction: .count(NSExpression(forConstantValue: arguments)))
             try #require(function.function == "count:")
             let result = try #require(function.expressionValue(with: nil, context: nil) as? Int)
             #expect(result == arguments.count)
         }
         
-        @Test("min: works as expected", arguments: FunctionTests.testNumbers)
-        func minWorksAsExpected(_ arguments: [NSNumber]) throws {
+        @Test("min:", arguments: FunctionTests.testNumberCollections)
+        func testMin(_ arguments: [NSNumber]) throws {
             let function = NSExpression(forFunction: .min(NSExpression(forConstantValue: arguments)))
             try #require(function.function == "min:")
             guard !arguments.isEmpty else { return }
@@ -47,8 +50,8 @@ extension NSExpressionTests {
             #expect(result == arguments.min(by: { $0.doubleValue < $1.doubleValue })?.doubleValue)
         }
         
-        @Test("max: works as expected", arguments: FunctionTests.testNumbers)
-        func maxWorksAsExpected(_ arguments: [NSNumber]) throws {
+        @Test("max:", arguments: FunctionTests.testNumberCollections)
+        func testMax(_ arguments: [NSNumber]) throws {
             let function = NSExpression(forFunction: .max(NSExpression(forConstantValue: arguments)))
             try #require(function.function == "max:")
             guard !arguments.isEmpty else { return }
@@ -56,7 +59,62 @@ extension NSExpressionTests {
             #expect(result == arguments.max(by: { $0.doubleValue < $1.doubleValue })?.doubleValue)
         }
         
-        static let testNumbers: [[NSNumber]] = [
+        @Test("median:", arguments: FunctionTests.testNumberCollections)
+        func testMedian(_ arguments: [NSNumber]) throws {
+            let function = NSExpression(forFunction: .median(NSExpression(forConstantValue: arguments)))
+            try #require(function.function == "median:")
+            guard !arguments.isEmpty else { return }
+            let result = try #require(function.expressionValue(with: nil, context: nil) as? Double)
+            let sortedArguments = arguments.sorted(by: { $0.doubleValue < $1.doubleValue })
+            
+            if sortedArguments.count % 2 == 0 {
+                #expect(result == (sortedArguments[sortedArguments.count / 2 - 1].doubleValue + sortedArguments[sortedArguments.count / 2].doubleValue) / 2)
+            } else {
+                #expect(result == sortedArguments[sortedArguments.count / 2].doubleValue)
+            }
+        }
+        
+        @Test("mode:", arguments: FunctionTests.testNumberCollections)
+        func testMode(_ arguments: [NSNumber]) throws {
+            let function = NSExpression(forFunction: .mode(NSExpression(forConstantValue: arguments)))
+            try #require(function.function == "mode:")
+            guard !arguments.isEmpty else { return }
+            let result = try #require(function.expressionValue(with: nil, context: nil) as? [NSNumber])
+            
+            var frequencies: [NSNumber: Int] = [:]
+            for n in arguments { frequencies[n, default: 0] += 1 }
+            
+            var mode: [NSNumber] = []
+            var maxFrequency = 0
+            for (n, frequency) in frequencies {
+                if frequency > maxFrequency {
+                    maxFrequency = frequency
+                    mode = [ n ]
+                } else if frequency == maxFrequency {
+                    mode.append(n)
+                }
+            }
+            
+            #expect(mode.contains(result))
+        }
+        
+        @Test("stddev:", arguments: FunctionTests.testNumberCollections)
+        func testStddev(_ arguments: [NSNumber]) throws {
+            let function = NSExpression(forFunction: .stddev(NSExpression(forConstantValue: arguments)))
+            try #require(function.function == "stddev:")
+            guard !arguments.isEmpty else { return }
+            let result = try #require(function.expressionValue(with: nil, context: nil) as? Double)
+            
+            let mean = doubleSum(arguments) / Double(arguments.count)
+            let n = arguments.reduce(into: 0.0, { $0 += pow($1.doubleValue - mean, 2) })
+            let d = Double(arguments.count) // Appears to be population stddev
+            let variance = n / d
+            let stddev = sqrt(variance)
+            
+            #expect(result == stddev)
+        }
+        
+        static let testNumberCollections: [[NSNumber]] = [
             [ 1, 2, 3, 4, 5 ],
             [ 0, 0, 0, 0, 0 ],
             [ 81, 5, 67, 61, 69, 41 ],
@@ -65,7 +123,13 @@ extension NSExpressionTests {
             [ -1, -2, -3, -4, -5 ],
             [ 1000000000000, 2000000000000 ],
             [ 0.1, 0.2 ],
+            [ 1, 2, 2, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 5 ],
         ]
+        
+        
+        // MARK: -
+        
+        
         
     }
     

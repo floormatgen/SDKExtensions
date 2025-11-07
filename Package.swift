@@ -19,6 +19,24 @@ swiftSettings += [
 #endif
 
 
+// MARK: - Targets
+
+var targets: [Target] = [
+    .target(
+        name: "FoundationExtensions",
+        swiftSettings: swiftSettings
+    ),
+]
+#if compiler(>=6.0) // Swift Testing requires at least Swift 6
+targets += [
+    .testTarget(
+        name: "FoundationExtensionsTests",
+        dependencies: ["FoundationExtensions"],
+        swiftSettings: swiftSettings
+    ),
+]
+#endif
+
 // MARK: - Package
 
 let package = Package(
@@ -30,17 +48,5 @@ let package = Package(
             targets: ["FoundationExtensions"]
         ),
     ],
-    targets: [
-        // Targets are the basic building blocks of a package, defining a module or a test suite.
-        // Targets can depend on other targets in this package and products from dependencies.
-        .target(
-            name: "FoundationExtensions",
-            swiftSettings: swiftSettings
-        ),
-        .testTarget(
-            name: "FoundationExtensionsTests",
-            dependencies: ["FoundationExtensions"],
-            swiftSettings: swiftSettings
-        ),
-    ]
+    targets: targets
 )
