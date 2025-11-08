@@ -1,3 +1,5 @@
+// NSExpression is only really supported on Darwin, other platforms call NSUnsupported
+#if canImport(Darwin)
 import Foundation
 
 
@@ -189,13 +191,13 @@ extension NSExpression {
         
         // Variadic Convenience Methods
         
-        @available(iOS 3.0, macOS 10.5, tvOS 9.0, visionOS 1.0, watchOS 2.0, *)
+        @available(iOS 3.0, macOS 10.5, tvOS 9.0, visionOS 1.0, watchOS 2.0, *) @inlinable
         public static func median(_ expressions: NSExpression...) -> Self { .median(expressions) }
         
-        @available(iOS 3.0, macOS 10.5, tvOS 9.0, visionOS 1.0, watchOS 2.0, *)
+        @available(iOS 3.0, macOS 10.5, tvOS 9.0, visionOS 1.0, watchOS 2.0, *) @inlinable
         public static func mode(_ expressions: NSExpression...) -> Self { .mode(expressions) }
         
-        @available(iOS 3.0, macOS 10.5, tvOS 9.0, visionOS 1.0, watchOS 2.0, *)
+        @available(iOS 3.0, macOS 10.5, tvOS 9.0, visionOS 1.0, watchOS 2.0, *) @inlinable
         public static func stddev(_ expressions: NSExpression...) -> Self { .stddev(expressions) }
 
         // MARK: Since iOS 3.0 (Assuming OSX 10.6)
@@ -233,3 +235,5 @@ extension NSExpression {
     }
 
 }
+
+#endif // canImport(Darwin)
