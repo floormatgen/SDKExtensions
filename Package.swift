@@ -72,6 +72,9 @@ var products: [Product] = [
 
 let package = Package(
     name: "FoundationExtensions",
-    products: products,
+    products: products, 
+    dependencies: [
+        .package(url: "https://github.com/apple/swift-docc-plugin", from: "1.0.0"),
+    ],
     targets: targets
 )

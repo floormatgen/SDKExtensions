@@ -1,3 +1,9 @@
+#if __has_include(<UIKit/NSLayoutConstraint.h>)
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #import <UIKit/UIKit.h>
 
 NS_ASSUME_NONNULL_BEGIN
@@ -16,3 +22,9 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 NS_ASSUME_NONNULL_END
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif // __has_include(<UIKit/NSLayoutConstraint.h>)
