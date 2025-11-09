@@ -30,13 +30,7 @@ var targets: [Target] = [
 #if canImport(Darwin)
 targets += [
     .target(
-        name: "UIKitExtensionsObjC",
-    ),
-    .target(
         name: "UIKitExtensions",
-        dependencies: [
-            .target(name: "UIKitExtensionsObjC")
-        ],
         swiftSettings: swiftSettings
     ),
 ]
@@ -64,9 +58,10 @@ var products: [Product] = [
     ),
     .library(
         name: "UIKitExtensions",
-        targets: ["FoundationExtensions", "UIKitExtensions", "UIKitExtensionsObjC"]
+        targets: ["FoundationExtensions", "UIKitExtensions"]
     ),
 ]
+
 
 // MARK: - Package
 
