@@ -2,22 +2,24 @@
 import UIKit
 
 /// A `UIScrollView` that avoids the keyboard
-@objc(UIEKeyboardAvoidingScrollView) @MainActor
+@MainActor
+#if FMG_SWIFT_PREVIEWS
+@available(iOS 13.0, tvOS 13.0, visionOS 1.0, *)
+#else
 @available(iOS 11.0, tvOS 11.0, visionOS 1.0, *)
+#endif
 open class KeyboardAvoidingScrollView: UIScrollView {
     
     
     // MARK: - Scroll Behaviour
     
-    @objc(UIEKeyboardAvoidingScrollViewScrollBehaviour)
-    public enum ScrollBehavior: UInt8 {
+    public enum ScrollBehavior {
         case all
         case horizontal
         case vertical
         case none
     }
     
-    @objc
     open var scrollBehavior: ScrollBehavior = .all {
         didSet {
             switch scrollBehavior {
@@ -51,13 +53,11 @@ open class KeyboardAvoidingScrollView: UIScrollView {
 #if !os(tvOS)
     
     @available(tvOS, unavailable)
-    @objc(UIEKeyboardAvoidingScrollViewKeyboardBehaviour)
-    public enum KeyboardBehaviour: UInt8 {
+    public enum KeyboardBehaviour {
         case notificationBased
 //        case constraintBased
     }
 
-    @objc
     @available(tvOS, unavailable)
     open var preferredKeyboardBehaviour: KeyboardBehaviour = .notificationBased {
         didSet {
@@ -153,16 +153,44 @@ open class KeyboardAvoidingScrollView: UIScrollView {
 }
 
 
-#if canImport(SwiftUI) && DEBUG
+#if canImport(SwiftUI) && FMG_SWIFT_PREVIEWS
 
 import SwiftUI
 
 @available(iOS 17.0, tvOS 17.0, *)
 #Preview {
     let view = KeyboardAvoidingScrollView()
+    view.scrollBehavior = .all
+    
+    let stackView = UIStackView()
+    stackView.axis = .vertical
+    stackView.spacing = 16
+    
+    for i in 0..<100 {
+        let label = UILabel()
+        label.text = "Label \(i) Label \(i) Label \(i) Label \(i) Label \(i) Label \(i) Label \(i) Label \(i)"
+        label.backgroundColor = .systemRed
+        label.font = .monospacedSystemFont(ofSize: 32, weight: .medium)
+        
+        label.translatesAutoresizingMaskIntoConstraints = false
+        stackView.addArrangedSubview(label)
+    }
+    
+    let textField = UITextField()
+    stackView.addArrangedSubview(textField)
+    
+    view.addSubview(stackView)
+    stackView.translatesAutoresizingMaskIntoConstraints = false
+    NSLayoutConstraint.activate(
+        stackView.topAnchor.constraint(equalTo: view.contentLayoutGuide.topAnchor),
+        stackView.bottomAnchor.constraint(equalTo: view.contentLayoutGuide.bottomAnchor),
+        stackView.leadingAnchor.constraint(equalTo: view.contentLayoutGuide.leadingAnchor),
+        stackView.trailingAnchor.constraint(equalTo: view.contentLayoutGuide.trailingAnchor)
+    )
+    
     return view
 }
 
 
-#endif // canImport(SwiftUI) && DEBUG
+#endif // canImport(SwiftUI) && FMG_SWIFT_PREVIEWS
 #endif // canImport(UIKit)

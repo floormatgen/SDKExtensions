@@ -18,6 +18,11 @@ swiftSettings += [
 ]
 #endif // compiler(<6.0)
 
+/// To use previews, uncomment this line
+/// This is because SwiftUI previews don't work properly before iOS 13.0
+/// and other aligned releases
+//swiftSettings.append(.define("FMG_SWIFT_PREVIEWS"))
+
 
 // MARK: - Targets
 
