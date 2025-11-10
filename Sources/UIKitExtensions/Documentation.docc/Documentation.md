@@ -17,3 +17,10 @@ A series of extensions for the UIKit Framework in order to make it more convenie
 ### Custom Views
 
 - ``/UIKitExtensions/KeyboardAvoidingScrollView``
+
+### UIImage.Orientation
+
+- ``/UIKitExtensions/UIKit/UIImage/Orientation/degrees``
+- ``/UIKitExtensions/UIKit/UIImage/Orientation/radians``
+- ``/UIKitExtensions/UIKit/UIImage/Orientation/isMirrored``
+- ``/UIKitExtensions/UIKit/UIImage/Orientation/init(degrees:)``
