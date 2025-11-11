@@ -40,6 +40,10 @@ targets += [
         name: "UIKitExtensions",
         swiftSettings: swiftSettings
     ),
+    .target(
+        name: "CombineExtensions",
+        swiftSettings: swiftSettings
+    )
 ]
 #endif // canImport(Darwin)
 
@@ -63,11 +67,21 @@ var products: [Product] = [
         name: "FoundationExtensions",
         targets: ["FoundationExtensions"]
     ),
+]
+
+// Apple Ecosystem Products
+#if canImport(Darwin)
+products += [
     .library(
         name: "UIKitExtensions",
-        targets: ["FoundationExtensions", "UIKitExtensions"]
+        targets: ["UIKitExtensions"]
     ),
+    .library(
+        name: "CombineExtensions",
+        targets: ["CombineExtensions"]
+    )
 ]
+#endif // canImport(Darwin)
 
 
 // MARK: - Package
